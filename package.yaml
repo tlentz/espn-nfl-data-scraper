@@ -1,0 +1,59 @@
+name: espn-nfl-data-scraper
+version: '0.1.0.0'
+category: Haskell
+author: Tyler Lentz
+maintainer: tyler.cg.lentz@gmail.com
+copyright: 2017 Tyler Lentz
+license: BSD3
+github: tlentz/espn-nfl-data-scraper
+extra-source-files:
+- README.md
+dependencies:
+- base
+library:
+  source-dirs: src
+  exposed-modules:
+  - Lib
+  - Types
+  - Helper
+  dependencies:
+  - network
+  - resourcet
+  - mtl
+  - http-conduit
+  - text
+  - transformers
+  - HandsomeSoup
+  - hxt
+  - HTTP
+  - http-client
+  - http-types
+  - bytestring
+  - string-conversions
+  - MissingH
+  - pretty-simple
+  - split
+  - double-conversion
+  - either-unwrap
+executables:
+  webscraper:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - espn-nfl-data-scraper
+    - http-client
+    - pretty-simple
+tests:
+  espn-nfl-data-scraper-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - espn-nfl-data-scraper
