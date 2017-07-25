@@ -11,42 +11,78 @@ extra-source-files:
 dependencies:
 - base
 library:
-  source-dirs: src
+  source-dirs: api
   exposed-modules:
-  - Lib
-  - Types
-  - Helper
+  - Api.Lib
+  - Api.Types
+  - Api.Helper
+  - Api.Server
   dependencies:
-  - network
-  - resourcet
-  - mtl
-  - http-conduit
-  - text
+  - aeson
+  - base
+  - containers
+  - elm-export
+  - random
+  - servant-server
+  - stm
   - transformers
-  - HandsomeSoup
-  - hxt
+  - uuid
+  - either-unwrap
+  - MissingH
   - HTTP
   - http-client
+  - text
+  - hxt
   - http-types
-  - bytestring
   - string-conversions
-  - MissingH
   - pretty-simple
   - split
   - double-conversion
-  - either-unwrap
+  - HandsomeSoup
+  - transformers
+  - http-conduit
+  - mtl
+  - resourcet
+  - network
 executables:
-  webscraper:
+  backend:
     main: Main.hs
-    source-dirs: app
+    source-dirs: backend
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
     dependencies:
-    - espn-nfl-data-scraper
+    - base
+    - containers
     - http-client
     - pretty-simple
+    - lucid
+    - random
+    - espn-nfl-data-scraper
+    - servant-lucid
+    - servant-server
+    - stm
+    - uuid
+    - wai
+    - warp
+  code-generator:
+    main: Main.hs
+    source-dirs: code-generator
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    dependencies:
+    - base
+    - elm-export
+    - servant-elm
+    - espn-nfl-data-scraper
+    - servant-server
+    - text
+
 tests:
   espn-nfl-data-scraper-test:
     main: Spec.hs
@@ -56,4 +92,5 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
+    - base
     - espn-nfl-data-scraper

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib
+module Api.Lib
     ( buildUrls
     , buildWeekUrl
     , getGameIds
@@ -13,19 +13,16 @@ module Lib
     , getGameStats
     ) where
 
+import Api.Helper (string2Double, string2Int)
+import Api.Types
 import Data.Either
 import Data.Either.Unwrap hiding (isLeft, isRight)
 import Data.List.Split (splitOn)
 import Data.String.Conversions (cs)
 import Data.String.Utils (replace, strip)
-import Data.Tree.NTree.TypeDefs
-import Helper (string2Double, string2Int)
 import Network.HTTP.Client
-import Network.HTTP.Types.Status (statusCode)
 import Text.HandsomeSoup
-import Text.Pretty.Simple
 import Text.XML.HXT.Core
-import Types
 
 buildUrls :: String -> String -> String
 buildUrls year week = buildWeekUrl year week
@@ -48,8 +45,11 @@ makeRequest manager url = do
 getGameIds :: String -> IO [String]
 getGameIds src = do
     let html = parseHtml $ cs src
-    links <- runX $ html >>> css "#schedule-page div a[name=&lpos=nfl:schedule:score]" ! "href"
-    let gameIds =  map (replace "/nfl/game?gameId=" "") links
+    links <-
+        runX $
+        html >>>
+        css "#schedule-page div a[name=&lpos=nfl:schedule:score]" ! "href"
+    let gameIds = map (replace "/nfl/game?gameId=" "") links
     return gameIds
 
 getGames :: Manager -> [String] -> IO [Either String Game]
@@ -70,17 +70,19 @@ getGame manager gameId = do
     if isLeft teamInfo || isLeft scores || isLeft stats
         then return $ Left "not alright"
         else do
-            let away = Team { info = fst $ fromRight teamInfo
-                            , stats = fst $ fromRight stats
-                            , scores = fst $ fromRight scores
-                            }
-                home = Team { info = snd $ fromRight teamInfo
-                            , stats = snd $ fromRight stats
-                            , scores = snd $ fromRight scores
-                            }
-                game = Game { gameId = gameId
-                            , teams = (away, home)
-                            }
+            let away =
+                    Team
+                    { info = fst $ fromRight teamInfo
+                    , stats = fst $ fromRight stats
+                    , scores = fst $ fromRight scores
+                    }
+                home =
+                    Team
+                    { info = snd $ fromRight teamInfo
+                    , stats = snd $ fromRight stats
+                    , scores = snd $ fromRight scores
+                    }
+                game = Game {gameId = gameId, teams = (away, home)}
             return $ Right game
 
 buildMatchupUrls :: [String] -> [String]
