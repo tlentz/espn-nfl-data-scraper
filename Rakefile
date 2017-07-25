@@ -16,7 +16,7 @@ task :elm_app_js do
 end
 
 task :elm_api_code_generator do
-    mkdir_p "code-generator/"
+    mkdir_p "frontend/src/Generated/"
     sh("stack exec code-generator")
 end
 

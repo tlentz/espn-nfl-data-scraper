@@ -50,3 +50,6 @@ Temporary Items
 .vscode
 *.cabal
 .idea
+frontend/dist
+frontend/src/Generated
+elm-stuff

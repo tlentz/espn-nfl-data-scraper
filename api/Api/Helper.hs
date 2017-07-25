@@ -1,4 +1,4 @@
-module Helper
+module Api.Helper
     ( string2Int
     , string2Double
     ) where
