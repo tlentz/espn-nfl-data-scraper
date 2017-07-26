@@ -304,7 +304,6 @@ parseTimeOfPossession str = timeOfPossession
     timeOfPossession = 60 * minutes + seconds
 
 calculateRatioPercentage :: (Int, Int) -> Double
-calculateRatioPercentage (left,0) = 0
 calculateRatioPercentage (left, right) = percentage
   where
     percentage = 100 * ((fromIntegral left) / (fromIntegral right))

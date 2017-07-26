@@ -34,4 +34,4 @@ server = gamesHandler
         gameIds <- liftIO $ getGameIds =<< (makeRequest manager url)
         games <- liftIO $ getGames manager gameIds
         let partitionedGames = partitionEithers games
-        return $ (snd partitionedGames)
+        return $ snd partitionedGames
