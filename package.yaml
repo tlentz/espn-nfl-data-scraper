@@ -1,72 +1,73 @@
-name: espn-nfl-data-scraper
-version: '0.1.0.0'
-category: Haskell
+name: espn-nfl-web-scraper
+version: '0.0.0.1'
+category: Web
 author: Tyler Lentz
-maintainer: tyler.cg.lentz@gmail.com
-copyright: 2017 Tyler Lentz
-license: BSD3
-github: tlentz/espn-nfl-data-scraper
+maintainer: Tyler Lentz
+copyright: Tyler Lentz
+license: AllRightsReserved
+github: tlentz/espn-nfl-webscraper
 extra-source-files:
 - README.md
+
 dependencies:
+- aeson
 - base
+- bytestring
+- elm-export
+- interpolate
+- iproute
+- network-uri
+- servant
+- servant-server
+- string-conversions
+- text
+- uuid
+- wai
+
 library:
   source-dirs: api
   exposed-modules:
-  - Api.Lib
   - Api.Types
   - Api.Helper
   - Api.Server
+  - Api.Example.Types
+  - Api.Example.Handler
+  - Api.ESPN.Handler
+  - Api.NFL.Types
   dependencies:
-  - aeson
-  - base
   - containers
-  - elm-export
-  - random
-  - servant-server
-  - stm
-  - transformers
-  - uuid
-  - either-unwrap
-  - MissingH
-  - HTTP
+  - data-default
+  - exceptions
+  - http-api-data
   - http-client
-  - text
-  - hxt
   - http-types
-  - string-conversions
-  - pretty-simple
-  - split
-  - double-conversion
-  - HandsomeSoup
-  - transformers
-  - http-conduit
   - mtl
-  - resourcet
   - network
+  - servant-client
+  - transformers
+  - pretty-simple
+  - postgresql-simple
+  - random
+  - HandsomeSoup
+  - http-conduit
+  - hxt
+  - split
+  - either-unwrap
+
 executables:
-  backend:
+  app:
     main: Main.hs
-    source-dirs: backend
+    source-dirs: app
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -Wall
     dependencies:
-    - base
-    - containers
-    - http-client
-    - pretty-simple
-    - lucid
-    - random
-    - espn-nfl-data-scraper
-    - servant-lucid
-    - servant-server
-    - stm
-    - uuid
-    - wai
+    - cryptonite
+    - espn-nfl-web-scraper
+    - wai-cors
     - warp
+
   code-generator:
     main: Main.hs
     source-dirs: code-generator
@@ -74,17 +75,13 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -Wall
     dependencies:
-    - base
-    - elm-export
+    - espn-nfl-web-scraper
     - servant-elm
-    - espn-nfl-data-scraper
-    - servant-server
-    - text
+    - servant-foreign
 
 tests:
-  espn-nfl-data-scraper-test:
+  nfl-web-scraper-tests:
     main: Spec.hs
     source-dirs: test
     ghc-options:
@@ -92,5 +89,5 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - base
-    - espn-nfl-data-scraper
+    - hspec
+    - espn-nfl-web-scraper
