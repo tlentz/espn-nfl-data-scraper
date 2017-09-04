@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Html exposing (div, button, text, input, p, h1, h2, form, Html, ul, li, table, tr, td, thead, th, tbody)
+import Html exposing (div, button, text, input, p, h1, h2, form, Html, ul, li, table, tr, td, thead, th, tbody, label)
 import Html.Attributes exposing (placeholder, value, type_, class, style, disabled)
 import Html.Events exposing (onClick, onInput)
 import Shared.Generated exposing (..)
@@ -38,61 +38,21 @@ update msg model =
 
         GetGames -> (model, getGames model.year model.week)
 
-        RecieveGame game ->
-          let
-                temp = Debug.log "got stuff back" "asdf"
-            in
-                ({model | game = game, showGame = True, showGames = False}, Cmd.none)
+        RecieveGame game -> ({model | game = game, showGame = True, showGames = False}, Cmd.none)
 
-        RecieveGames games -> 
-            let
-                temp = Debug.log "got stuff back" "asdf"
-            in
-                ({model | games = games, showGames = True, showGame = False}, Cmd.none)
-        
+        RecieveGames games -> ({model | games = games, showGames = True, showGame = False}, Cmd.none)
 
         Error err ->  ({model | year = -1}, Cmd.none)
 
 
-scores : Scores -> Html Msg
-scores sc =
-    let
-        ot = Maybe.withDefault -1 sc.scoresOT
-        otScores = case ot of
-            -1 -> ""
-            _ -> " OT: " ++ (toString ot)
-    in
-        div [] [ text <| "Q1:" ++ (toString sc.scoresQ1) ++ " Q2:"++ (toString sc.scoresQ2) ++ " Q3:"++(toString sc.scoresQ3) ++ " Q4:"++ (toString sc.scoresQ4) ++ otScores ++ " Final:" ++ (toString sc.scoresFinal) ]
-
-displayStat : String -> Int -> Html Msg
-displayStat title stat =
-    div [] [text <| title ++ ": " ++ (toString stat)]
-
-
-stats : GameStats -> Html Msg
-stats gs =
-    div []
-        [ ul [] 
-            [ li [] [displayStat "Total First Downs: " gs.totalFirstDowns]
-            , li [] [displayStat "Passing First Downs: " gs.passingFirstDowns]
-            , li [] [displayStat "Rushing First Downs: " gs.rushingFirstDowns]
-            , li [] [displayStat "Total Plays: " gs.totalPlays]
-            , li [] [displayStat "Total Yards: " gs.totalYards]
-            , li [] [displayStat "Total Drives: " gs.totalDrives]
-            , li [] [displayStat "Total Rushing Yards: " gs.totalRushingYards]
-            , li [] [displayStat "Turnovers: " gs.turnovers]
-            , li [] [displayStat "Time of Possesion: " gs.timeOfPossession]
-            ]
-        ]
-
 displayTeamInfo : TeamInfo -> Html Msg
 displayTeamInfo info =
     let
-        whereAt = if info.tiIsHome then li [] [ text "Home" ] else li [] [ text "Away" ]
+        whereAt = if info.tiIsHome then "Home" else "Away"
     in
-        ul []
-           [ li [] [ text <| info.tiLongName ++ info.tiShortName ]
-           , li [] [ whereAt]
+        table [ class "team-info table" ]
+           [ thead [] [ th [] [ text <| info.tiLongName ++ " " ++ info.tiShortName ] ]
+           , tbody [] [ tr [] [ td [] [ text whereAt ] ] ] 
            ]
 
 displayScores : Game -> Html Msg
@@ -105,7 +65,7 @@ displayScores game =
         if isOT then
             displayOTScores game
         else
-            table [] 
+            table [ class "scores table" ] 
                 [ thead []
                     [ th [] []
                     , th [] [ text "1" ]
@@ -136,7 +96,7 @@ displayScores game =
 
 displayOTScores : Game -> Html Msg
 displayOTScores game =
-    table [] 
+    table [ class "scores table" ] 
         [ thead []
             [ th [] []
             , th [] [ text "1" ]
@@ -153,7 +113,7 @@ displayOTScores game =
                 , td [] [ text (toString game.gAwayTeam.tScores.scoresQ2) ]
                 , td [] [ text (toString game.gAwayTeam.tScores.scoresQ3) ]
                 , td [] [ text (toString game.gAwayTeam.tScores.scoresQ4) ]
-                , td [] [ text (toString game.gAwayTeam.tScores.scoresOT) ]
+                , td [] [ text (toString (Maybe.withDefault -1 game.gAwayTeam.tScores.scoresOT)) ]
                 , td [] [ text (toString game.gAwayTeam.tScores.scoresFinal) ]
                 ]
             , tr []
@@ -162,7 +122,7 @@ displayOTScores game =
                 , td [] [ text (toString game.gHomeTeam.tScores.scoresQ2) ]
                 , td [] [ text (toString game.gHomeTeam.tScores.scoresQ3) ]
                 , td [] [ text (toString game.gHomeTeam.tScores.scoresQ4) ]
-                , td [] [ text (toString game.gHomeTeam.tScores.scoresOT) ]
+                , td [] [ text (toString (Maybe.withDefault -1 game.gHomeTeam.tScores.scoresOT)) ]
                 , td [] [ text (toString game.gHomeTeam.tScores.scoresFinal) ]
                 ]
             ]
@@ -170,12 +130,12 @@ displayOTScores game =
 
 displayTeamInfoAndScores : Game -> Html Msg
 displayTeamInfoAndScores game =
-    table []
+    table [ class "table" ]
           [ tr [] 
-               [ td [] [ displayTeamInfo game.gAwayTeam.tInfo ]
-               , td [] [ displayScores game ]
-               , td [] [ displayTeamInfo game.gHomeTeam.tInfo ]
-               ]
+                [ td [ class "team-info-col" ] [ displayTeamInfo game.gAwayTeam.tInfo ]
+                , td [ class "scores-col" ] [ displayScores game ]
+                , td [ class "team-info-col" ] [ displayTeamInfo game.gHomeTeam.tInfo ]
+                ]
           ]
 
 printGameTable : Game -> Html Msg
@@ -184,7 +144,7 @@ printGameTable game =
         away = game.gAwayTeam.tGameStats
         home = game.gHomeTeam.tGameStats
     in
-        table [] 
+        table [ class "table" ] 
             [ thead []
                 [ th [] [ text "Matchup" ]
                 , th [] [ text game.gAwayTeam.tInfo.tiAbbrev ]
@@ -367,23 +327,28 @@ printGameTable game =
 
 displayGame : Game -> Html Msg
 displayGame game =
-    div [ class "row" ]
-        [ div [ class "col-12" ] 
-              [ displayTeamInfoAndScores game
-              , printGameTable game
-              ]
+    div [ class "container form-control" ]
+        [ div [ class "row" ] [ displayTeamInfoAndScores game ]
+        , div [ class "row" ] [ printGameTable game ]
         ]
 
 view : Model -> Html Msg
 view model =
-  div []
+  div [ class "container" ]
     [ div []
-        [ input [ type_ "number", placeholder "Year", onInput YearInput ] [ text (toString model.year) ]
-        , input [ type_ "number", placeholder "Week", onInput WeekInput ] [ text (toString model.week) ]
+        [ div [ class "form-group" ]
+              [ label [] [ text "Year" ]
+              , input [ class "form-control", type_ "number", placeholder "Year", onInput YearInput ] [ text (toString model.year) ]
+              ]
+        , div [ class "form-group" ]
+              [ label [] [ text "Week" ]
+              , input [ class "form-control", type_ "number", placeholder "Week", onInput WeekInput ] [ text (toString model.week) ]
+              ]
         , viewValidateGetGames model
         ]
     , div []
-        [ input [ type_ "text", placeholder "Game Id", onInput GameIdInput ] [ text model.gameId ]
+        [ label [] [ text "Game Id" ]
+        , input [ class "form-control", type_ "text", placeholder "Game Id", onInput GameIdInput ] [ text model.gameId ]
         , viewValidateGetGame model
         ]
     , if model.showGame
@@ -400,9 +365,9 @@ viewValidateGetGames model =
         else
           ("red", "Invalid year or week input.", True)
   in
-    div [ style [("color", color)] ]
+    div [ class "form-group", style [("color", color)] ]
         [ text message
-        , button [ onClick GetGames, disabled valid ] [ text "Get Games" ]
+        , button [ class "form-control btn btn-primary", onClick GetGames, disabled valid ] [ text "Get Games" ]
         ]
 
 viewValidateGetGame : Model -> Html Msg
@@ -414,7 +379,7 @@ viewValidateGetGame model =
         else
           ("red", "", True)
   in
-    div [ style [("color", color)] ]
+    div [ class "form-group", style [("color", color)] ]
         [ text message
-        , button [ onClick GetGame, disabled valid ] [ text "Get Game" ]
+        , button [ class "form-control btn btn-primary", onClick GetGame, disabled valid ] [ text "Get Game" ]
         ]
