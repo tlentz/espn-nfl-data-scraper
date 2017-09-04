@@ -1,6 +1,3 @@
-require 'standalone_migrations'
-StandaloneMigrations::Tasks.load_tasks
-
 task :default => [:build_all, :serve]
 
 task :build_all => [:build_backend, :build_frontend]

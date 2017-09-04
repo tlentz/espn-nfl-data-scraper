@@ -1,11 +1,11 @@
-name: espn-nfl-web-scraper
+name: espn-nfl-data-scraper
 version: '0.0.0.1'
 category: Web
 author: Tyler Lentz
 maintainer: Tyler Lentz
 copyright: Tyler Lentz
 license: AllRightsReserved
-github: tlentz/espn-nfl-webscraper
+github: tlentz/espn-nfl-datascraper
 extra-source-files:
 - README.md
 
@@ -64,7 +64,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - cryptonite
-    - espn-nfl-web-scraper
+    - espn-nfl-data-scraper
     - wai-cors
     - warp
 
@@ -76,7 +76,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - espn-nfl-web-scraper
+    - espn-nfl-data-scraper
     - servant-elm
     - servant-foreign
 
@@ -90,4 +90,4 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - hspec
-    - espn-nfl-web-scraper
+    - espn-nfl-data-scraper

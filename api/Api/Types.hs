@@ -25,4 +25,4 @@ type Api
                            :> Get '[JSON] Game
                )
 
-type ApiWithAssets = "espn-nfl-web-scraper" :> (Api :<|> Raw)
+type ApiWithAssets = "espn-nfl-data-scraper" :> (Api :<|> Raw)
