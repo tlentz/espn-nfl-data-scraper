@@ -1,0 +1,16 @@
+development:
+  adapter: postgresql
+  database: nfl
+  encoding: utf8
+  host: localhost
+  port: 5432
+  username: nfl
+  password: nfldb
+production:
+  adapter: postgresql
+  database: nfl
+  encoding: utf8
+  host: localhost
+  port: 5432
+  username: nfl
+  password: nfldb
