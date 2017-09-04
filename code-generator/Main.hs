@@ -18,7 +18,7 @@ import Api.NFL.Types (Game, Team, TeamInfo, GameStats, Scores)
 elmOpts :: ElmOptions
 elmOpts =
   defElmOptions
-    { urlPrefix = Static "/espn-nfl-web-scraper" }
+    { urlPrefix = Static "/espn-nfl-data-scraper" }
   
 elmImports :: [Text]
 elmImports = [ "import Dict exposing (Dict)"
